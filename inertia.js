@@ -27,6 +27,7 @@ function initializeMap() {
 	var mapOptions = {
 		center: STARTING_LOCATION,
 		zoom: 3
+		mapTypeId: google.maps.MapTypeId.SATELLITE
 	};
 	var map = new google.maps.Map($('#map-canvas'), mapOptions);
 }

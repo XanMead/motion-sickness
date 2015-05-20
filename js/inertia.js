@@ -26,7 +26,7 @@ var STARTING_LOCATION = {lat: 44.590630, lng: -104.715540};
 function initializeMap() {
 	var mapOptions = {
 		center: STARTING_LOCATION,
-		zoom: 3
+		zoom: 3,
 		mapTypeId: google.maps.MapTypeId.SATELLITE
 	};
 	var map = new google.maps.Map($('#map-canvas'), mapOptions);
@@ -40,14 +40,18 @@ function calculateVelocity(latitude, elevation) {
 	var coreDistance = EARTH_RADIUS + elevation;
 	
 	// Find the lateral leg, or distance from the polar axis to the object
-	var axisDistance = coreDistance * Math.asin(degsToRads(latitude));
+	var axisDistance = coreDistance * Math.cos(degsToRads(latitude));
 	
 	// Find lateral circumference, or the distance the object will travel in one rotational period (24 hours)
-	var periodDistance = 2 * Math.pi * axisDistance;
+	var periodDistance = 2 * Math.PI * axisDistance;
 	
 	// Divide by number of seconds in a day, to get meters/second
 	var velocity = periodDistance / 86400;
 	return velocity;
+}
+
+function degsToRads(degs) {
+	return degs * (Math.PI/180);
 }
 
 /* meters/second -> feet/second */

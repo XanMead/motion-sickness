@@ -10,5 +10,25 @@
 </head>
 <body>
 	<div id="map-canvas"></div>
+	<div class="interface">
+		<form class="geonames-search" onsubmit="return false;">
+			<input type="text" name="placename" placeholder="e.g. Devils Tower" size="30">
+			<input type="submit" value="Search">
+		</form>
+		<form class="location-info" onsubmit="return false;">
+			Latitude: <input type="text" name="lat" size="5" readonly>
+			Longitude: <input type="text" name="lng" size="5" readonly>
+			Elevation: <input type="number" name="elv" size="5">
+			<input type="submit" value="How fast am I going?">
+		</form>
+		<ul class="results">
+			<h3>You are travelling around the axis of the earth at</h3>
+			<li><span id="mps"></span> meters per second</li>
+			<li><span id="kph"></span> kilometers per hour</li>
+			<li><span id="fps"></span> feet per second</li>
+			<li><span id="mph"></span> miles per hour</li>
+			<li><span id="tss"></span> X speed of sound</li>
+		</ul>
+	</div>
 </body>
 </html>

@@ -17,42 +17,11 @@
  *
  */
 
-var STARTING_LOCATION = {lat: 44.590630, lng: -104.715540};
 var map;
 var marker;
 
-/* Placeholder GeoNames data for prototype */
-var GEONAMES_TEST = {
-	"totalResultsCount": 1,
-	"geonames": [{
-		"countryId": "6252001",
-		"adminCode1": "WY",
-		"countryName": "United States",
-		"fclName": "mountain,hill,rock,... ",
-		"countryCode": "US",
-		"lng": "-104.71516",
-		"fcodeName": "mountain",
-		"toponymName": "Devils Tower",
-		"fcl": "T",
-		"name": "Devils Tower",
-		"fcode": "MT",
-		"geonameId": 5823152,
-		"lat": "44.59056",
-		"adminName1": "Wyoming",
-		"population": 0
-	}]
-};
-
-/* Placeholder Elevation Service data for prototype */
-var ELEVATION_SERVICE_TEST = {
-	"location": null, // unimportant for prototype
-	"elevation": 1556.268188476562,
-	"resolution": null // unimportant
-};
-
 $(function() {
 	initializeMap();
-	setMarker(STARTING_LOCATION);
 
 	// Catches geonames search form submission and performs query
 	$('.geonames-search').submit(function(event) {
@@ -73,12 +42,14 @@ $(function() {
 			processLocation(lat, elv);
 		}
 	});
+
+
 });
 
 function initializeMap() {
 	var mapOptions = {
-		center: STARTING_LOCATION,
-		zoom: 16,
+		center: {lat: 0, lng: 0},
+		zoom: 0,
 		mapTypeId: google.maps.MapTypeId.SATELLITE,
 		streetViewControl: false
 	};
@@ -128,15 +99,13 @@ function propagatePlace(geoQuery) {
 
 /* Queries the GeoNames search endpoint, and returns the results. */
 function queryGeoNames(query) {
-	/* !!!PROTOTYPE!!! */
-	return GEONAMES_TEST;
+
 }
 
 /* Queries the Google Maps Elevation Service for the specific location,
  * then returns the elevation. */
 function queryElevationService(coords) {
-	/* !!!PROTOTYPE!!! */
-	return ELEVATION_SERVICE_TEST.elevation;
+
 }
 
 /* Calculates the velocity, then posts it to the DOM in various units. */

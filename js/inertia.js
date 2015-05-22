@@ -87,6 +87,7 @@ function setMarker(loc) {
 	}
 	marker = new google.maps.Marker({
 		position: loc,
+		map: map,
 		animation: google.maps.Animation.DROP
 	});
 }

@@ -96,6 +96,10 @@ function propagatePlace(coords) {
 
 /* Queries the GeoNames search endpoint, and returns the results. */
 function queryGeoNames(query) {
+	// Hide results div
+	$('.results').hide();
+
+	// Request parameters
 	var request = {
 		q: query,
 		maxRows: 5,
@@ -112,7 +116,7 @@ function queryGeoNames(query) {
 			var coords = getCoords(result);
 			setMarker(coords);
 			propagatePlace(coords);
-			map.setZoom(15);
+			map.setZoom(10);
 		}
 		else {
 			alert("GeoNames can't find \"" + query + "\"\nTry another spelling or look for it on the map.");

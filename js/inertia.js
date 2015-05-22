@@ -64,10 +64,12 @@ $(function() {
 	$('.location-info').submit(function(event) {
 		var lat = $(this).find("input[name='lat']").val();
 		var elv = $(this).find("input[name='elv']").val();
-		if (lat != "" || elv != "") {
+		if (lat == "" || elv == "") {
 			alert("Please select a location first.");
 		}
 		else {
+			lat = parseFloat(lat);
+			elv = parseFloat(elv);
 			processLocation(lat, elv);
 		}
 	});
@@ -112,6 +114,7 @@ function propagatePlace(geoQuery) {
 		lng: parseFloat(result.lng)
 	};
 	var elv = queryElevationService(coords);
+	elv = Math.round(elv);
 
 	// Center map and mark it
 	map.setCenter(coords);

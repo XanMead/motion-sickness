@@ -19,6 +19,7 @@
 
 var map;
 var marker;
+var elvSrv;
 
 $(function() {
 	initializeMap();
@@ -46,12 +47,10 @@ $(function() {
 	google.maps.event.addListener(map, 'click', function(e) {
 		console.log(e.latLng);
 		setMarker(e.latLng);
-		var coords = {
-			lat: e.latLng.lat(),
-			lng: e.latLng.lng()
-		};
-		propagatePlace(coords);
+		propagatePlace(e.latLng);
 	});
+
+	elvSrv = new google.maps.ElevationService();
 
 });
 
@@ -87,13 +86,12 @@ function processSearch(query) {
 /* Uses Google Maps Elevation Service to find elevation at location,
  * then populates the location-info fields with that information. */
 function propagatePlace(coords) {
-	var elv = queryElevationService(coords);
-	elv = Math.round(elv);
+	// Post elevation data
+	queryElevationService(coords);
 
 	// Populate location-info fields
-	$("input[name='lat']").val(coords.lat);
-	$("input[name='lng']").val(coords.lng);
-	$("input[name='elv']").val(elv);
+	$("input[name='lat']").val(coords.lat());
+	$("input[name='lng']").val(coords.lng());
 }
 
 /* Queries the GeoNames search endpoint, and returns the results. */
@@ -119,7 +117,33 @@ function getCoords(result) {
 /* Queries the Google Maps Elevation Service for the specific location,
  * then returns the elevation. */
 function queryElevationService(coords) {
+	var answer;
+	var locations = [];
 
+	locations.push(coords);
+	console.log(locations);
+
+	// Create a LocationElevationRequest object using the array's one value
+	var positionalRequest = {
+		'locations': locations
+	};
+
+	console.log("posRequest: " + positionalRequest);
+
+	// Initiate the location request
+	elvSrv.getElevationForLocations(positionalRequest, function(results, status) {
+		if (status == google.maps.ElevationStatus.OK) {
+			// Retrieve the first result
+			if (results[0]) {
+				answer = results[0].elevation;
+				$("input[name='elv']").val(Math.round(answer));
+			} else {
+				alert('No results found');
+			}
+		} else {
+			alert('Elevation service failed due to: ' + status);
+		}
+	});
 }
 
 /* Calculates the velocity, then posts it to the DOM in various units. */

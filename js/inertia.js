@@ -49,13 +49,17 @@ $(function() {
 		}
 	});
 
+	// Listener to place marker on map and propagate
 	google.maps.event.addListener(map, 'click', function(e) {
 		// clear irrelevant search
-		$("input[name='placename'").val("");
+		$("input[name='placename']").val("");
+		$('.loc-name').text("");
+		$('.loc-name').hide();
 		setMarker(e.latLng);
 		propagatePlace(e.latLng);
 	});
 
+	// Initialize Elevation Service
 	elvSrv = new google.maps.ElevationService();
 
 });
@@ -113,7 +117,10 @@ function queryGeoNames(query) {
 	})
 	.done(function(result) {
 		if (result.totalResultsCount > 0) {
-			var coords = getCoords(result);
+			var loc = result.geonames[0];
+			var coords = getCoords(loc);
+			$('.loc-name').text(loc.name + ", " + loc.countryName);
+			$('.loc-name').show();
 			setMarker(coords);
 			propagatePlace(coords);
 			map.setZoom(10);
@@ -127,13 +134,11 @@ function queryGeoNames(query) {
 	});
 }
 
-/* Parses the coordinates from a raw GeoNames query result */
-function getCoords(result) {
-	// Focus first result
-	var loc = result.geonames[0];
+/* Parses the coordinates from a GeoNames row */
+function getCoords(row) {
 	// extract dimensions
-	var lat = parseFloat(loc.lat);
-	var lng = parseFloat(loc.lng);
+	var lat = parseFloat(row.lat);
+	var lng = parseFloat(row.lng);
 	// Wrap in LatLng
 	var coords = new google.maps.LatLng(lat, lng);
 	return coords;

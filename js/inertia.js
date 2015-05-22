@@ -27,25 +27,31 @@ $(function() {
 	// Catches geonames search form submission and performs query
 	$('.geonames-search').submit(function(event) {
 		var place = $(this).find("input[name='placename']").val();
-		processSearch(place);
+		queryGeoNames(place);
 	});
 
 	// Catches submission of location data and processes it
 	$('.location-info').submit(function(event) {
+		// get pertinent information
 		var lat = $(this).find("input[name='lat']").val();
 		var elv = $(this).find("input[name='elv']").val();
+
+		// Check for emptiness
 		if (lat == "" || elv == "") {
 			alert("Please select a location first.");
 		}
 		else {
 			lat = parseFloat(lat);
 			elv = parseFloat(elv);
+
+			// Run and post calculations
 			processLocation(lat, elv);
 		}
 	});
 
 	google.maps.event.addListener(map, 'click', function(e) {
-		console.log(e.latLng);
+		// clear irrelevant search
+		$("input[name='placename'").val("");
 		setMarker(e.latLng);
 		propagatePlace(e.latLng);
 	});
@@ -57,7 +63,7 @@ $(function() {
 function initializeMap() {
 	var mapOptions = {
 		center: {lat: 0, lng: 0},
-		zoom: 1,
+		zoom: 2,
 		mapTypeId: google.maps.MapTypeId.SATELLITE,
 		streetViewControl: false
 	};
@@ -77,12 +83,6 @@ function setMarker(loc) {
 	});
 }
 
-function processSearch(query) {
-	var result = queryGeoNames(query);
-	var coords = getCoords(result);
-	propagatePlace(coords);
-}
-
 /* Uses Google Maps Elevation Service to find elevation at location,
  * then populates the location-info fields with that information. */
 function propagatePlace(coords) {
@@ -96,21 +96,42 @@ function propagatePlace(coords) {
 
 /* Queries the GeoNames search endpoint, and returns the results. */
 function queryGeoNames(query) {
-
+	var request = {
+		q: query,
+		maxRows: 5,
+		username: "xanmead"
+	}
+	var result = $.ajax({
+		url: "http://api.geonames.org/searchJSON",
+		data: request,
+		dataType: "jsonp",
+		type: "GET"
+	})
+	.done(function(result) {
+		if (result.totalResultsCount > 0) {
+			var coords = getCoords(result);
+			setMarker(coords);
+			propagatePlace(coords);
+			map.setZoom(15);
+		}
+		else {
+			alert("GeoNames can't find \"" + query + "\"\nTry another spelling or look for it on the map.");
+		}
+	})
+	.fail(function(jqXHR, error, errorThrown){
+		console.log('ERROR: ' + error);
+	});
 }
 
 /* Parses the coordinates from a raw GeoNames query result */
 function getCoords(result) {
-	if (result.totalResultsCount == 0) {
-		alert("No results found!");
-		return false;
-	}
 	// Focus first result
-	result = result.geonames[0];
-	var coords = {
-		lat: parseFloat(result.lat),
-		lng: parseFloat(result.lng)
-	};
+	var loc = result.geonames[0];
+	// extract dimensions
+	var lat = parseFloat(loc.lat);
+	var lng = parseFloat(loc.lng);
+	// Wrap in LatLng
+	var coords = new google.maps.LatLng(lat, lng);
 	return coords;
 }
 

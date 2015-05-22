@@ -43,13 +43,17 @@ $(function() {
 		}
 	});
 
+	google.maps.event.addListener(map, 'click', function(e) {
+		console.log('click: ' + e.latLng);
+		setMarker(e.latLng);
+	});
 
 });
 
 function initializeMap() {
 	var mapOptions = {
 		center: {lat: 0, lng: 0},
-		zoom: 0,
+		zoom: 1,
 		mapTypeId: google.maps.MapTypeId.SATELLITE,
 		streetViewControl: false
 	};
@@ -61,6 +65,8 @@ function setMarker(loc) {
 	if (marker != null) {
 		marker.setMap(null);
 	}
+	console.log(loc);
+	map.setCenter(loc);
 	marker = new google.maps.Marker({
 		position: loc,
 		map: map,
@@ -87,8 +93,7 @@ function propagatePlace(geoQuery) {
 	var elv = queryElevationService(coords);
 	elv = Math.round(elv);
 
-	// Center map and mark it
-	map.setCenter(coords);
+	// mark the location
 	setMarker(coords);
 
 	// Populate location-info fields

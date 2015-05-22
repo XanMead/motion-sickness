@@ -23,21 +23,24 @@ var marker;
 
 /* Placeholder GeoNames data for prototype */
 var GEONAMES_TEST = {
-	"countryId": "6252001",
-	"adminCode1": "WY",
-	"countryName": "United States",
-	"fclName": "mountain,hill,rock,... ",
-	"countryCode": "US",
-	"lng": "-104.71516",
-	"fcodeName": "mountain",
-	"toponymName": "Devils Tower",
-	"fcl": "T",
-	"name": "Devils Tower",
-	"fcode": "MT",
-	"geonameId": 5823152,
-	"lat": "44.59056",
-	"adminName1": "Wyoming",
-	"population": 0
+	"totalResultsCount": 1,
+	"geonames": [{
+		"countryId": "6252001",
+		"adminCode1": "WY",
+		"countryName": "United States",
+		"fclName": "mountain,hill,rock,... ",
+		"countryCode": "US",
+		"lng": "-104.71516",
+		"fcodeName": "mountain",
+		"toponymName": "Devils Tower",
+		"fcl": "T",
+		"name": "Devils Tower",
+		"fcode": "MT",
+		"geonameId": 5823152,
+		"lat": "44.59056",
+		"adminName1": "Wyoming",
+		"population": 0
+	}]
 };
 
 /* Placeholder Elevation Service data for prototype */
@@ -54,7 +57,7 @@ $(function() {
 	// Catches geonames search form submission and performs query
 	$('.geonames-search').submit(function(event) {
 		var place = $(this).find("input[name='placename']").val();
-		propagatePlace(query);
+		propagatePlace(place);
 	});
 
 	// Catches submission of location data and processes it
@@ -105,8 +108,8 @@ function propagatePlace(geoQuery) {
 	// Focus first result
 	result = result.geonames[0];
 	var coords = {
-		lat: result.lat,
-		lng: result.lng
+		lat: parseFloat(result.lat),
+		lng: parseFloat(result.lng)
 	};
 	var elv = queryElevationService(coords);
 

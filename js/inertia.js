@@ -55,6 +55,7 @@ $(function() {
 		$("input[name='placename']").val("");
 		$('.loc-name').text("");
 		$('.loc-name').hide();
+		$('.results').hide();
 		setMarker(e.latLng);
 		propagatePlace(e.latLng);
 	});

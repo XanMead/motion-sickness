@@ -17,3 +17,13 @@ form {
 ul {
 	list-style: none;
 }
+
+.results > li {
+	font-style: italic;
+}
+
+.results span {
+	font-style: normal;
+	font-family: monospace;
+	font-size: 2rem;
+}
